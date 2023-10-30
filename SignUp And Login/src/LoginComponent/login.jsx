@@ -26,25 +26,30 @@ class Login extends Component {
 
 
 
-  handleChange = e => {
+  handleChange = (e) => {
+  const { name, value } = e.target;
+  
+  // Use destructuring to get formError from state
+  const { formError } = this.state;
+  
+  // Create a copy of formError to avoid mutating the state directly
+  const updatedFormError = { ...formError };
 
-    const { name, value } = e.target
-    let formError = this.state.formError;
-    this.setState({ [name]: value });
-    console.log(e.target.name)
-    console.log(e.target.value)
-    switch (name) {
-      case "email":
-        formError.email = emailRegExp.test(value) ? '' : 'Invalid email address';
-        break;
-      case "password":
-        formError.password = value.length < 3 ? "minimum 3 character required" : "";
-        break;
-      default:
-        break;
-    }
-    this.setState({ formError, [name]: value }, () => console.log(this.state))
+  // Update formError based on the field name
+  switch (name) {
+    case "email":
+      updatedFormError.email = emailRegExp.test(value) ? '' : 'Invalid email address';
+      break;
+    case "password":
+      updatedFormError.password = value.length < 3 ? 'Minimum 3 characters required' : '';
+      break;
+    default:
+      break;
   }
+
+  // Use a single setState call to update both the value and formError
+  this.setState({ [name]: value, formError: updatedFormError }, () => console.log(this.state));
+};
 
   handleSubmit = e => {
     e.preventDefault();
